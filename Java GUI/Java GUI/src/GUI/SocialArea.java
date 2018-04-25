@@ -14,7 +14,7 @@ import java.net.Socket;
  */
 public class SocialArea extends javax.swing.JFrame {
 
-     static Socket s;   // Socket
+    static Socket Client;   // Socket
     static DataInputStream din; // input and output streams
     static DataOutputStream dout;
     /**
@@ -320,9 +320,9 @@ public class SocialArea extends javax.swing.JFrame {
     
     
     try{
-            s = new Socket("127.0.0.1",9090); //Socket Local host
-            din = new DataInputStream(s.getInputStream()); // Data inout and output streams to write and recieve data
-            dout = new DataOutputStream(s.getOutputStream());
+            Socket Client = new Socket("127.0.0.1",9090); //Socket Local host
+            din = new DataInputStream(Client.getInputStream()); // Data inout and output streams to write and recieve data
+            dout = new DataOutputStream(Client.getOutputStream());
             String msgin ="";
             while(!msgin.equals("exit")){
                 msgin = din.readUTF();
@@ -331,7 +331,7 @@ public class SocialArea extends javax.swing.JFrame {
             
             
         }catch(Exception e){
-            
+            e.printStackTrace();
         }
 }
 

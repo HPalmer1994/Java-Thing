@@ -33,11 +33,11 @@ while(true){
 System.out.println("Waiting for a client to connect");
 
 //establish connection
-Socket client = server.accept();
-System.out.println("A client has connected. His address is " + client.getInetAddress());
+Socket Client = server.accept();
+System.out.println("A client has connected. His address is " + Client.getInetAddress());
 
 //assign the client to  the handler
-TimeHandler th = new TimeHandler(client);
+TimeHandler th = new TimeHandler(Client);
 Thread t = new Thread(th);
 t.start();
 }

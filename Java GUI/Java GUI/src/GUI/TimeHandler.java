@@ -18,20 +18,20 @@ import java.util.Date;
  * @author Ben
  */
 public class TimeHandler implements Runnable {
-Socket client;
+Socket Client;
 DataOutputStream outToClient;
 DataInputStream InFromClient;
 
 public TimeHandler(Socket _client) throws IOException {
-client = _client;
-outToClient = new DataOutputStream(client.getOutputStream());
-InFromClient = new DataInputStream(client.getInputStream());
+Client = _client;
+outToClient = new DataOutputStream(Client.getOutputStream());
+InFromClient = new DataInputStream(Client.getInputStream());
 
 
 } //constructor
 
 
-public void run() {
+public void run(){
 try{
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); // Find out what this does 
     String MessageIn = "", MessageOut = "";
