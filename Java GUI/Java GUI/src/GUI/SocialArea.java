@@ -17,45 +17,16 @@ import java.util.logging.Logger;
  */
 public class SocialArea extends javax.swing.JFrame {
 
+    static Socket _client;   // Socket
+    static DataInputStream din; // input and output streams
+    static DataOutputStream dout;
     
-    ClientConnection cc;
     /**
      * Creates new form SocialArea
      */
     public SocialArea() {
         initComponents();
-        
     }
-    public Client(){
-    
-    try{
-            Socket _client = new Socket("127.0.0.1",9090); //Socket Local host
-            cc = new ClientConnection(_client, this);
-            cc.start();
-            
-            String msgin ="";
-            while(!msgin.equals("exit")){
-                msgin = din.readUTF();
-                SocialAreaMsgArea.setText(SocialAreaMsgArea.getText().trim()+"\n Client:\t"+msgin); // Gets the information coming in from the server
-                if(msgin.toLowerCase().equals("exit")){
-                    break;
-                }
-            }
-            
-          
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    
-        try {
-            din.close();
-            dout.close();
-            _client.close();
-        } catch (IOException e) {
-           e.printStackTrace();
-        }
-    }  
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -313,7 +284,7 @@ public class SocialArea extends javax.swing.JFrame {
         msgout = PostField.getText().trim();  // Gets the text going out and puts it here
         dout.writeUTF(msgout);  // Sends out the messages typed into mesgout string
         }catch(Exception e){
-            
+             
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -321,7 +292,6 @@ public class SocialArea extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        new Client();
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -351,7 +321,36 @@ public class SocialArea extends javax.swing.JFrame {
                 new SocialArea().setVisible(true);
             }
         });
-   
+    
+    
+    try{
+            Socket _client = new Socket("127.0.0.1",9090); //Socket Local host
+            din = new DataInputStream(_client.getInputStream()); // Data inout and output streams to write and recieve data
+            dout = new DataOutputStream(_client.getOutputStream());
+            
+            String msgin ="";
+            while(!msgin.equals("exit")){
+                msgin = din.readUTF();
+                SocialAreaMsgArea.setText(SocialAreaMsgArea.getText().trim()+"\n Client:\t"+msgin); // Gets the information coming in from the server
+                if(msgin.toLowerCase().equals("exit")){
+                    break;
+                }
+            }
+            
+          
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    
+        try {
+            din.close();
+            dout.close();
+            _client.close();
+        } catch (IOException e) {
+           e.printStackTrace();
+        }
+            
+    
     
 }
 
