@@ -5,46 +5,77 @@
  */
 package GUI;
 
-import java.io.BufferedReader;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  *
  * @author Ben
  */
-public class TimeHandler implements Runnable {
+public class TimeHandler extends Thread {
+ 
 Socket Client;
+Server server;
 DataOutputStream outToClient;
 DataInputStream InFromClient;
+boolean Running = true;
 
-public TimeHandler(Socket _client) throws IOException {
-Client = _client;
-outToClient = new DataOutputStream(Client.getOutputStream());
-InFromClient = new DataInputStream(Client.getInputStream());
-
-
-} //constructor
-
-
-public void run(){
-try{
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); // Find out what this does 
-    String MessageIn = "", MessageOut = "";
-    while(!MessageIn.equals("end")){
-    MessageIn = InFromClient.readUTF();
-    System.out.println(MessageIn); //Printing Client message
-    MessageOut = br.readLine();
-    outToClient.writeUTF(MessageOut);
-    outToClient.flush();
+public TimeHandler(Socket Client, Server server) throws IOException {
+super("serverConnectionThread");
+    this.Client = Client;
+    this.server = server;
+} 
+public void SendingmessagesOne (String text){
+    try {
+        outToClient.writeUTF(text);
+        outToClient.flush();
+    } catch (IOException ex) {
+        Logger.getLogger(TimeHandler.class.getName()).log(Level.SEVERE, null, ex);
     }
-}catch(Exception e){
 }
-        
+
+public void SendingmessagesMany (String text){
+    for (int index = 0; index < server.connections.size(); index++){
+       TimeHandler TH = server.connections.get(index);
+       TH.SendingmessagesOne(text);
+}
+}
+public void run(){
+    
+    try {
+        InFromClient = new DataInputStream(Client.getInputStream());
+        outToClient = new DataOutputStream(Client.getOutputStream());
+        while (Running){
+            while(InFromClient.available()==0){
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                     e.printStackTrace();
+                }
+            }
+             String msgin = InFromClient.readUTF();
+            SendingmessagesOne (msgin);
+        }
+       InFromClient.close();
+       outToClient.close();
+       Client.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
+
+
+
+
+}
+
 
 
 
